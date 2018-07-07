@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:MvxContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:views="clr-namespace:MvvmCross.Forms.Views;assembly=MvvmCross.Forms"
+                      x:Class="Sample.UI.Views.HomeView">
+
+    <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Margin="30">
+        <Label TextColor="Red" FontSize="Large" Margin="0,0,0,50"
+               Text="Warning! The app is going to crash after the first button is pressed! The reason is still unknown!"></Label>
+        <Button Text="Show Notification" Command="{Binding ShowNotificationCommand}"></Button>
+        <Button Text="Navigate to page 2" Command="{Binding NavigateToPage2Command}"></Button>
+    </StackLayout>
+</views:MvxContentPage>
