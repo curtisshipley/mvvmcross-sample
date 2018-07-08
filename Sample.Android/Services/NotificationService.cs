@@ -12,13 +12,13 @@ namespace Sample.Droid.Services
 	public class NotificationService : INotificationService
 	{
 
-		public void ShowNotification()
+		public void ShowNotification<VM>() where VM : IMvxViewModel
 		{
 			var notification = new NotificationCompat.Builder(Application.Context, SampleApplication.NOTIFICATION_CHANNEL)
 				.SetContentTitle("Sample app")
 				.SetContentText("Click here to navigate to page 2")
 				.SetSmallIcon(Resource.Drawable.ic_notification)
-				.SetContentIntent(GetContentIntent())
+				.SetContentIntent(GetContentIntent<VM>())
 				.SetShowWhen(false)
 				.Build();
 
@@ -26,9 +26,9 @@ namespace Sample.Droid.Services
 			notificationManager.Notify(1, notification);
 		}
 
-		private PendingIntent GetContentIntent()
+		private PendingIntent GetContentIntent<VM>() where VM : IMvxViewModel
 		{
-			var request = MvxViewModelRequest<Page2ViewModel>.GetDefaultRequest();
+			var request = MvxViewModelRequest<VM>.GetDefaultRequest();
 
 			var converter = Mvx.Resolve<IMvxNavigationSerializer>();
 			var requestText = converter.Serializer.SerializeObject(request);

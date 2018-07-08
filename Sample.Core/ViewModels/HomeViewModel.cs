@@ -22,7 +22,7 @@ namespace Sample.Core.ViewModels
 
         private void ShowNotification()
         {
-            notificationService.ShowNotification();
+            notificationService.ShowNotification<Page2ViewModel>();
         }
 
         private async void NavigateToPage2()
