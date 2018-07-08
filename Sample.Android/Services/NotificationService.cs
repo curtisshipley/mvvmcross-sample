@@ -1,4 +1,5 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.Support.V4.App;
 using MvvmCross;
 using MvvmCross.Platforms.Android.Views;
@@ -8,28 +9,40 @@ using Sample.Core.ViewModels;
 
 namespace Sample.Droid.Services
 {
-    public class NotificationService : INotificationService
-    {
-        public void ShowNotification()
-        {
-            var notification = new NotificationCompat.Builder(Application.Context)
-                .SetContentTitle("Sample app")
-                .SetContentText("Click here to navigate to page 2")
-                .SetSmallIcon(Resource.Drawable.ic_notification)
-                .SetContentIntent(GetContentIntent())
-                .SetShowWhen(false)
-                .Build();
+	public class NotificationService : INotificationService
+	{
 
-            var notificationManager = NotificationManagerCompat.From(Application.Context);
-            notificationManager.Notify(1, notification);
-        }
+		public void ShowNotification()
+		{
+			var notification = new NotificationCompat.Builder(Application.Context, SampleApplication.NOTIFICATION_CHANNEL)
+				.SetContentTitle("Sample app")
+				.SetContentText("Click here to navigate to page 2")
+				.SetSmallIcon(Resource.Drawable.ic_notification)
+				.SetContentIntent(GetContentIntent())
+				.SetShowWhen(false)
+				.Build();
 
-        private PendingIntent GetContentIntent()
-        {
-            var request = MvxViewModelRequest<Page2ViewModel>.GetDefaultRequest();
-            var translator = Mvx.Resolve<IMvxAndroidViewModelRequestTranslator>();
-            var intent = translator.GetIntentFor(request);
-            return PendingIntent.GetActivity(Application.Context, 0, intent, 0);
-        }
-    }
+			var notificationManager = NotificationManagerCompat.From(Application.Context);
+			notificationManager.Notify(1, notification);
+		}
+
+		private PendingIntent GetContentIntent()
+		{
+			var request = MvxViewModelRequest<Page2ViewModel>.GetDefaultRequest();
+
+			var converter = Mvx.Resolve<IMvxNavigationSerializer>();
+			var requestText = converter.Serializer.SerializeObject(request);
+
+			var intent = new Intent(Application.Context, typeof(MainActivity)); 
+
+			// We only want one activity started
+			intent.AddFlags(ActivityFlags.SingleTop);
+			
+			intent.PutExtra("MvxLaunchData", requestText);
+
+			// Create Pending intent, with OneShot. We're not going to want to update this.
+			return PendingIntent.GetActivity(Application.Context, 0, intent, PendingIntentFlags.OneShot);
+		}
+
+	}
 }
